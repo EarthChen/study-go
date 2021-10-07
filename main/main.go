@@ -1,5 +1,12 @@
 package main
 
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
 func Sum(numbers []int) (sum int) {
 	sum = 0
 	//for i := 0; i < 5; i++ {
@@ -26,10 +33,20 @@ func SumAll(numberAll ...[]int) []int {
 	return ret
 }
 
+func Greet(writer io.Writer, name string) {
+	fmt.Fprintf(writer, "Hello, %s", name)
+}
+
+func MyGreeterHandler(w http.ResponseWriter, r *http.Request) {
+	Greet(w, "world")
+}
+
 func main() {
-	println(Sum([]int{3, 9}))
-	var numbers = SumAll([]int{1, 2}, []int{0, 9}, []int{})
-	for _, number := range numbers {
-		println(number)
-	}
+	Greet(os.Stdout, "test")
+	http.ListenAndServe(":5000", http.HandlerFunc(MyGreeterHandler))
+	//println(Sum([]int{3, 9}))
+	//var numbers = SumAll([]int{1, 2}, []int{0, 9}, []int{})
+	//for _, number := range numbers {
+	//	println(number)
+	//}
 }
